@@ -3,16 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: j.fox <jfox.42angouleme@gmail.com>         +#+  +:+       +#+        */
+/*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:19 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/11 18:42:58 by j.fox            ###   ########.fr       */
+/*   Updated: 2026/02/14 17:06:39 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/minitalk.h"
 
-int main(void)
+// in reference to type. 0 represents an error with the initial arguments.
+// in reference to type. 1 represents and error with the PID.
+static void	error_handle(int args, int type)
 {
-    return (0);
+	if (args < 3 && type == 0)
+	{
+		ft_printf("Exit status 1. Not enough arguments.\n");
+		exit(1);
+	}
+	else if (args > 3 && type == 0)
+	{
+		ft_printf("Exit status 1. Too many arguments.\n");
+		exit(1);
+	}
+	else if (type == 1)
+	{
+		ft_printf("Exit status 1. First argument must be the server PID.\n");
+		exit(1);
+	}
+	return ;
+}
+
+// Using i as an iterator we check each digit of pid.
+// Insuring it includes only numbers.
+static int	check_pid(char *pid)
+{
+	int		i;
+
+	i = 0;
+	while (pid[i])
+	{
+		if (!ft_isdigit(pid[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+// Loop through the message, converting each char to binary.
+// Send each bit of the binary char until the message is complete.
+static void	send_message(pid_t serv_pid, char * message)
+{
+	int	i;
+	int	bits;
+
+	i = 0;
+	while (message[i])
+	{
+		bits = 0;
+		while (bits < 8)
+		{
+			if ((message[i] & (0b10000000 >> bits)))
+				kill(serv_pid, SIGUSR1);
+			else
+				kill (serv_pid, SIGUSR2);
+			usleep(500);
+			bits++;
+		}
+	i++;
+	}
+	return ;
+}
+
+// Error handle the imput parameters then convert server_pid.
+// Save input string to pass to server and then send.
+int	main(int argc, char **argv)
+{
+	pid_t	serv_pid;
+	char	*message;
+
+	if (argc < 3 || argc > 3)
+		error_handle(argc, 0);
+	if (!check_pid(argv[1]))
+		error_handle(3, 1);
+	serv_pid = ft_atoi(argv[1]);
+	message = argv[2];
+	send_message(serv_pid, message);
+	// kill(serv_pid, SIGUSR1);
+	// usleep(42);
+	// kill(serv_pid, SIGUSR2);
+	return (0);
 }
