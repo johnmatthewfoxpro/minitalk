@@ -39,12 +39,17 @@
 
 //create a communtication program, client and server
 
-//start with the server, upon launch it prints its PID.
-//The client then takes 2 parameters, the servewrs PID and a string to send.
+//start with the server, upon launch it prints its PID.  =COMPLETE
+//The client then takes 2 parameters, the servers PID and a string to send.
+//                                                       =COMPLETE
 
 //Client sends the string to the server, then the server prints it without delay.
+//                                                       =COMPLETE=
+//   -THIS NEEDS TO BE DONE PER STRING, NOT PER CHAR-
+//   -My version is working, but I need to impliment a better way-
 
-// serer needs to recieve strings from several clients in a row without needing to restart.
+// serVer needs to recieve strings from several clients in a row without needing to restart.
+//                                                       =COMPLETE=
 
 // comms must use exsclusively UNIX signals.
-// SIGUSR1 and SIGUSR2 are permitted.
+// SIGUSR1 and SIGUSR2 are permitted.                   =COMPLETE=
