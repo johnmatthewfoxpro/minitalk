@@ -50,8 +50,8 @@ static int	check_pid(char *pid)
 	return (1);
 }
 
-// Loop through the message, converting each char to binary.
-// Send each bit of the binary char until the message is complete.
+// Loop through the message, converting each char to binary with bitshift.
+// Send each bit of the char until the message is complete.
 static void	send_message(pid_t serv_pid, char * message)
 {
 	int	i;
@@ -75,8 +75,9 @@ static void	send_message(pid_t serv_pid, char * message)
 	return ;
 }
 
-// Error handle the imput parameters then convert server_pid.
-// Save input string to pass to server and then send.
+// Error handle the imput parameters then convert server_pid string with atoi.
+// Save input string to variable and then send to server.
+// Send line return once message completes.
 int	main(int argc, char **argv)
 {
 	pid_t	serv_pid;
@@ -85,12 +86,10 @@ int	main(int argc, char **argv)
 	if (argc < 3 || argc > 3)
 		error_handle(argc, 0);
 	if (!check_pid(argv[1]))
-		error_handle(3, 1);
+		error_handle(argc, 1);
 	serv_pid = ft_atoi(argv[1]);
 	message = argv[2];
 	send_message(serv_pid, message);
-	// kill(serv_pid, SIGUSR1);
-	// usleep(42);
-	// kill(serv_pid, SIGUSR2);
+	send_message(serv_pid, "\n");
 	return (0);
 }

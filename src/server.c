@@ -19,7 +19,8 @@ static void print_pid(void)
 	pid_t	server;
 
 	server = getpid();
-	ft_printf("%d\n", server);
+	ft_printf("Server PID: %d\n", server);
+	ft_printf("Waiting for client...\n");
 	return ;
 }
 
@@ -33,29 +34,27 @@ static void	handle(int signal)
 	{
         c |= (0b10000000 >> bits);
 	}
-    else if (signal == SIGUSR2)
+    else
 	{
         c &= ~(0b10000000 >> bits);
 	}
 	bits++;
 	if (bits == 8)
 	{
-		ft_printf("%c", c);
+		write(1, &c, 1);
 		c = 0;
 		bits = 0;
 	}
-	// if (signal == SIGUSR1)
-	// 	ft_printf("Hello\n");
-	// if (signal == SIGUSR2)
-	// 	ft_printf("World\n");
 }
 
 // print the servers pid, define sigaction struct.
 // pause the executable until it recieves a signal, then print the result. 
 int main(void)
 {
-	print_pid();
 	struct sigaction process;
+
+	ft_bzero(&process, sizeof(process));
+	print_pid();
 	process.sa_handler = handle;
 	sigemptyset(&process.sa_mask);
 	sigaction(SIGUSR1, &process, NULL);
