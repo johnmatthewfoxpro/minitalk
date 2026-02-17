@@ -52,13 +52,15 @@ static int	check_pid(char *pid)
 
 // Loop through the message, converting each char to binary with bitshift.
 // Send each bit of the char until the message is complete.
-static void	send_message(pid_t serv_pid, char * message)
+static void	send_message(pid_t serv_pid, char *message)
 {
 	int	i;
 	int	bits;
+	int	len;
 
 	i = 0;
-	while (message[i])
+	len = ft_strlen(message);
+	while (i <= len)
 	{
 		bits = 0;
 		while (bits < 8)
@@ -67,10 +69,10 @@ static void	send_message(pid_t serv_pid, char * message)
 				kill(serv_pid, SIGUSR1);
 			else
 				kill (serv_pid, SIGUSR2);
-			usleep(500);
+			usleep(100);
 			bits++;
 		}
-	i++;
+		i++;
 	}
 	return ;
 }
@@ -90,6 +92,5 @@ int	main(int argc, char **argv)
 	serv_pid = ft_atoi(argv[1]);
 	message = argv[2];
 	send_message(serv_pid, message);
-	send_message(serv_pid, "\n");
 	return (0);
 }
