@@ -12,25 +12,57 @@
 
 #include "../header/minitalk.h"
 
-// get the pid of the executable as it runs.
-// print the process number.
-static void print_pid(void)
-{
-	pid_t	server;
-
-	server = getpid();
-	ft_printf("Server PID: %d\n", server);
-	ft_printf("Waiting for client...\n");
-	return ;
-}
+static volatile	sig_atomic_t globalbit = 0;
 
 // set how to act when recieving signals from client.
 static void	handle(int signal)
 {
-	static char c = 0;
-	static int bits = 0;
-
 	if (signal == SIGUSR1)
+	{
+		globalbit = 1;
+	}
+    else
+	{
+        globalbit = 0;
+	}
+	return ;
+}
+
+// A modified strjoin from get_next_line project.
+// This strjoin works very well in minitalk for building the string.
+// It also frees within the function, helping solve leaks.
+static char	*mt_strjoin(char *s1, char const *s2)
+{
+	char	*s3;
+	size_t	len1;
+	size_t	lenx;
+
+	if (!s2)
+		return (NULL);
+	len1 = ft_strlen(s1);
+	lenx = (len1 + ft_strlen(s2));
+	s3 = (char *)ft_calloc((lenx + 1), sizeof(char));
+	if (!s3)
+		return (NULL);
+	if (s1)
+	{
+		ft_strlcpy(s3, s1, (len1 + 1));
+		free(s1);
+	}
+	ft_strlcpy(&s3[len1], s2, ft_strlen(s2) + 1);
+	return (s3);
+}
+
+// Build the char bit by bit with bit shift.
+static char	build_char(char c)
+{
+	static int	bits = 0;
+
+	if (bits >= 8)
+	{
+		bits = 0;
+	}
+	if (globalbit == 1)
 	{
         c |= (0b10000000 >> bits);
 	}
@@ -39,27 +71,54 @@ static void	handle(int signal)
         c &= ~(0b10000000 >> bits);
 	}
 	bits++;
-	if (bits == 8)
+	return (c);
+}
+
+// Here we build the string with the help of static variables.
+// Each time we recieve a signal we will change a bit in the build_char function.
+// Once we have 8 bits, that char gets added to the string in strjoin.
+// When we hit null, we print the string!
+static void	build_string(void)
+{
+	static char c = 0;
+	static char	*str = 0;
+	static int	bits = 0;
+
+	c = build_char(c);
+	bits++;
+	if (bits >= 8)
 	{
-		write(1, &c, 1);
-		c = 0;
+		str = mt_strjoin(str, &c);
+		if (c == '\0')
+		{
+			ft_printf("%s\n", str);
+			free(str);
+			str = NULL;
+		}
 		bits = 0;
+		c = 0;
 	}
 }
 
+// get the pid of the server executable as it runs.
 // print the servers pid, define sigaction struct.
 // pause the executable until it recieves a signal, then print the result. 
 int main(void)
 {
-	struct sigaction process;
+	struct	sigaction process;
+	pid_t	server;
 
+	server = getpid();
+	ft_printf("Server PID: %d\nWaiting for client...\n", server);
 	ft_bzero(&process, sizeof(process));
-	print_pid();
 	process.sa_handler = handle;
 	sigemptyset(&process.sa_mask);
 	sigaction(SIGUSR1, &process, NULL);
     sigaction(SIGUSR2, &process, NULL);
 	while (1)
+	{
 		pause();
+		build_string();
+	}
 	return (0);
 }
