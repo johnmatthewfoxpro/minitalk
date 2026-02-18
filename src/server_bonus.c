@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:25 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/14 17:37:54 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/18 14:40:27 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,27 @@
 int g_globalbit = 0;
 
 // set how to act when recieving signals from client.
-static void	handle(int signal)
+//static void	handle(int signal)
+static void	handle (int signal, siginfo_t *info, void *waste)
 {
+	static int	counter = 0;
+
+	(void)waste;
 	if (signal == SIGUSR1)
 	{
 		g_globalbit = 1;
+		counter = 0;
 	}
-    else
+	else
 	{
-        g_globalbit = 0;
+		g_globalbit = 0;
+		counter++;
+	}
+	kill(info->si_pid, SIGUSR1);
+	if (counter >= 8)
+	{
+		kill(info->si_pid, SIGUSR2);
+		counter = 0;
 	}
 	return ;
 }
@@ -64,11 +76,11 @@ static char	build_char(char c)
 	}
 	if (g_globalbit == 1)
 	{
-        c |= (0b10000000 >> bits);
+		c |= (0b10000000 >> bits);
 	}
-    else
+	else
 	{
-        c &= ~(0b10000000 >> bits);
+		c &= ~(0b10000000 >> bits);
 	}
 	bits++;
 	return (c);
@@ -102,19 +114,20 @@ static void	build_string(void)
 
 // get the pid of the server executable as it runs.
 // print the servers pid, define sigaction struct.
-// pause the executable until it recieves a signal, then print the result. 
+// pause the executable until it recieves a signal, then print the result.
 int main(void)
 {
-	struct	sigaction process;
-	pid_t	server;
+	struct sigaction	process;
+	pid_t				server;
 
 	server = getpid();
 	ft_printf("Server PID: %d\nWaiting for client...\n", server);
 	ft_bzero(&process, sizeof(process));
-	process.sa_handler = handle;
+	process.sa_sigaction = &handle;
+	process.sa_flags = SA_SIGINFO;
 	sigemptyset(&process.sa_mask);
 	sigaction(SIGUSR1, &process, NULL);
-    sigaction(SIGUSR2, &process, NULL);
+	sigaction(SIGUSR2, &process, NULL);
 	while (1)
 	{
 		pause();
