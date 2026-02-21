@@ -95,7 +95,8 @@ ping_re:
 	@echo "=======================REBUILDING THE EXECUTABLES======================="
 	@echo "\033[0m"
 
-.PHONY: all clean fclean re tools ping_make ping_re
+.PHONY: all clean fclean re tools ping_make ping_bonus_make ping_re
 
 -include $(SER_OBJ:.o=.d)
 -include $(CLI_OBJ:.o=.d)
+
