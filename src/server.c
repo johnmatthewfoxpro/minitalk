@@ -6,13 +6,13 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:25 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/21 14:06:46 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 14:46:54 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/minitalk.h"
 
-int g_globalbit = 0;
+int	g_globalbit = 0;
 
 // set how to act when recieving signals from client.
 static void	handle(int signal)
@@ -21,9 +21,9 @@ static void	handle(int signal)
 	{
 		g_globalbit = 1;
 	}
-    else
+	else
 	{
-        g_globalbit = 0;
+		g_globalbit = 0;
 	}
 	return ;
 }
@@ -64,11 +64,11 @@ static char	build_char(char c)
 	}
 	if (g_globalbit == 1)
 	{
-        c |= (0b10000000 >> bits);
+		c |= (0b10000000 >> bits);
 	}
-    else
+	else
 	{
-        c &= ~(0b10000000 >> bits);
+		c &= ~(0b10000000 >> bits);
 	}
 	bits++;
 	return (c);
@@ -82,7 +82,7 @@ static char	build_char(char c)
 // STR is freed on recieving NULL. However if we force exit, this is not done.
 static void	build_string(void)
 {
-	static char c = 0;
+	static char	c = 0;
 	static char	*str = 0;
 	static int	bits = 0;
 
@@ -105,10 +105,10 @@ static void	build_string(void)
 // get the pid of the server executable as it runs.
 // print the servers pid, define sigaction struct.
 // pause the executable until it recieves a signal, then print the result.
-int main(void)
+int	main(void)
 {
-	struct	sigaction process;
-	pid_t	server;
+	struct sigaction	process;
+	pid_t				server;
 
 	server = getpid();
 	ft_printf("Server PID: %d\nWaiting for client...\n", server);
@@ -116,7 +116,7 @@ int main(void)
 	process.sa_handler = handle;
 	sigemptyset(&process.sa_mask);
 	sigaction(SIGUSR1, &process, NULL);
-    sigaction(SIGUSR2, &process, NULL);
+	sigaction(SIGUSR2, &process, NULL);
 	while (1)
 	{
 		pause();

@@ -6,17 +6,17 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:25 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/21 13:49:51 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 14:54:53 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/minitalk.h"
 
-int g_globalbit = 0;
+int	g_globalbit = 0;
 
 // set how to act when recieving signals from client.
-//static void	handle(int signal)
-static void	handle (int signal, siginfo_t *info, void *waste)
+// static void	handle(int signal)
+static void	handle(int signal, siginfo_t *info, void *waste)
 {
 	static int	counter = 0;
 
@@ -94,7 +94,7 @@ static char	build_char(char c)
 // STR is freed on recieving NULL. However if we force exit, this is not done.
 static void	build_string(void)
 {
-	static char c = 0;
+	static char	c = 0;
 	static char	*str = 0;
 	static int	bits = 0;
 
@@ -112,12 +112,13 @@ static void	build_string(void)
 		bits = 0;
 		c = 0;
 	}
+	return ;
 }
 
 // get the pid of the server executable as it runs.
 // print the servers pid, define sigaction struct.
 // pause the executable until it recieves a signal, then print the result.
-int main(void)
+int	main(void)
 {
 	struct sigaction	process;
 	pid_t				server;
