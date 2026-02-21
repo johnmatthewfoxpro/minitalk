@@ -6,17 +6,17 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:19 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/21 13:15:57 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 14:48:04 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/minitalk.h"
 
-int g_recieve = 0;
+int	g_recieve = 0;
 
 // this handle is purely to control the speed of the outgoing message.
 // it's now dependant on recieving a return signal from the server.
-static void	handle (int signal)
+static void	handle(int signal)
 {
 	if (signal == SIGUSR1)
 		g_recieve = 1;
@@ -116,7 +116,5 @@ int	main(int argc, char **argv)
 	serv_pid = ft_atoi(argv[1]);
 	message = argv[2];
 	send_message(serv_pid, message);
-	if (g_recieve = 10)
-		
 	return (0);
 }
