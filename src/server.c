@@ -6,7 +6,7 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:25 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/14 17:37:54 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 14:06:46 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,11 @@ static char	build_char(char c)
 }
 
 // Here we build the string with the help of static variables.
-// Each time we recieve a signal we will change a bit in the build_char function.
+// Each time we recieve a signal we change a bit in the build_char function.
 // Once we have 8 bits, that char gets added to the string in strjoin.
 // When we hit null, we print the string!
+// IMPORTANT: Under Normal operation, there are no leaks in this function.
+// STR is freed on recieving NULL. However if we force exit, this is not done.
 static void	build_string(void)
 {
 	static char c = 0;
@@ -102,7 +104,7 @@ static void	build_string(void)
 
 // get the pid of the server executable as it runs.
 // print the servers pid, define sigaction struct.
-// pause the executable until it recieves a signal, then print the result. 
+// pause the executable until it recieves a signal, then print the result.
 int main(void)
 {
 	struct	sigaction process;
