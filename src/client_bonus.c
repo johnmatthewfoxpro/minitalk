@@ -6,7 +6,7 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:19 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/18 15:38:41 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 13:15:57 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,7 @@ int	main(int argc, char **argv)
 	serv_pid = ft_atoi(argv[1]);
 	message = argv[2];
 	send_message(serv_pid, message);
+	if (g_recieve = 10)
+		
 	return (0);
 }
