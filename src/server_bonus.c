@@ -6,7 +6,7 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:25 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/21 14:54:53 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 15:45:44 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 int	g_globalbit = 0;
 
 // set how to act when recieving signals from client.
-// static void	handle(int signal)
+// static int counter keeps tracks of 0's, so we can return a special signal
+// to the client when we hit the \0 at the end of our message.
 static void	handle(int signal, siginfo_t *info, void *waste)
 {
 	static int	counter = 0;

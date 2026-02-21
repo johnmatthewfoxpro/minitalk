@@ -6,7 +6,7 @@
 /*   By: jfox <jfox.42angouleme@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/11 14:21:19 by j.fox             #+#    #+#             */
-/*   Updated: 2026/02/18 14:57:39 by jfox             ###   ########.fr       */
+/*   Updated: 2026/02/21 15:48:03 by jfox             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ static int	check_pid(char *pid)
 // Send each bit of the char until the message is complete.
 // The usleep of 400 is justified. This allows the client to send:
 // 100 chars in around 1 second. And 30,000 chars under 2 minutes.
+// If the Usleep is set to 10000, then the program can be run with valgrind.
+// It becomes exceptionally slow, but is useful for memory leak tests.
 static void	send_message(pid_t serv_pid, char *message)
 {
 	int	i;
@@ -81,7 +83,6 @@ static void	send_message(pid_t serv_pid, char *message)
 
 // Error handle the imput parameters then convert server_pid string with atoi.
 // Save input string to variable and then send to server.
-// Send line return once message completes.
 int	main(int argc, char **argv)
 {
 	pid_t	serv_pid;
